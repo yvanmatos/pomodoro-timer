@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+
+    <div id="home" class="content">
+    <header>
+        <img src="./imgs/tomato.svg" alt="logomarca">
+        <h1>Pomodoro Timer</h1>
+    </header>
+    <main>
+        <div id="timer">
+            <span>25:00</span>
+        </div>
+        <div id="error">
+            <span></span>
+        </div>
+        <div class="controls">
+            <a href="#" id="button" class="start">Start</a>
+            <a href="#" id="button" class="stop">Stop</a>
+            <a href="#" id="button" class="reset">Reset</a>
+        </div>
+    </main>
+
+    
+        <form method="POST">
+            <legend>
+                <h3>Settings</h3>
+            </legend>
+            
+            <div class="settings-group">
+                <div class="settings-item">
+                    <label for="pomodoro">Pomodoro</label>
+                    <input id="pomodoro" type="text" name="pomodoro" placeholder="25:00">
+                </div>
+                <div class="settings-item">
+                    <label for="short">Short Break</label>
+                <input id="short" type="text" name="short" placeholder="5:00">
+                </div>
+                <div class="settings-item">
+                    <label for="long">Long Break</label>
+                <input id="long" type="text" name="long" placeholder="15:00">
+                </div>                                  
+        </div>
+        <div class="save">
+            <input type="button" id="submit" value="Save" onclick="saveSettings();">
+            <span id="saved-settings"></span>
+        </div>
+        </form>
+        
+    </div>
+
+<script src="./js/main.js"></script>
+</body>
+</html>
