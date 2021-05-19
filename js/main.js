@@ -3,10 +3,11 @@ let timer = document.querySelector("#timer")
 const start = document.querySelector(".start")
 const stop = document.querySelector(".stop")
 const reset = document.querySelector(".reset")
+const save = document.querySelector("#submit")
 
 const alarm = new Audio('./imgs/alarm.mp3')
 
-
+// Listeners
 start.addEventListener("click", () => {
     toggle()
 })
@@ -17,9 +18,13 @@ stop.addEventListener("click", () => {
 
 reset.addEventListener("click", () => {
     toggle(true)
-    location.reload()
+    error.innerText = '';
+    timer.innerText = workTimeR;
 })
 
+save.addEventListener("click", () => {
+    saveSettings();
+})
 
 // Timer
 let type = 'Work'
@@ -91,6 +96,8 @@ const displayCurrentTimeLeftInSession = () => {
     if (isNaN(workTimeLeft)){
       timer.innerText = "Error"
       error.innerText = "Please use positive integers for all timers"
+      isRunning = false
+      return 0
     } else {
     const secondsLeft = workTimeLeft;
     let result = '';
