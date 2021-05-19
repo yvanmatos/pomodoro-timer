@@ -7,9 +7,11 @@ const reset = document.querySelector(".reset")
 const pomodoro = document.querySelector("[name=pomodoro]")
 const short = document.querySelector("[name=short]")
 const long = document.querySelector("[name=long]")
+const save = document.querySelector("#submit")
 
 const alarm = new Audio('./imgs/alarm.mp3')
-const save = document.querySelector("#submit")
+const inputs = document.querySelectorAll("[cl-input]")
+
 
 // Listeners
 start.addEventListener("click", () => {
@@ -22,35 +24,24 @@ stop.addEventListener("click", () => {
 
 reset.addEventListener("click", () => {
     toggle(true)
+    error.innerText = " "
+    // timer.innerText = workTimeLeft
 })
 
 save.addEventListener("click", () => {
     saveSettings();
 })
 
-pomodoro.addEventListener("change", () => {
-  if(pomodoro.value.match(/[a-zA-Z]/g)) { 
-    save.disabled = true
-  } else { 
-    save.disabled = false
-  }
-})
+inputs.forEach(e => {
+  e.addEventListener("change", () => {
+    if(e.value.match(/[a-zA-Z]/g) || "") { 
+      save.disabled = true
+    } else { 
+      save.disabled = false
+    }
+  })
+});
 
-long.addEventListener("change", () => {
-  if(long.value.match(/[a-zA-Z]/g)) { 
-    save.disabled = true
-  } else { 
-    save.disabled = false
-  }
-})
-
-short.addEventListener("change", () => {
-  if(short.value.match(/[a-zA-Z]/g)) { 
-    save.disabled = true
-  } else { 
-    save.disabled = false
-  }
-})
 
 // Timer
 let type = 'Work'
@@ -58,16 +49,20 @@ let timeSpentInCurrentSession = 0;
 let workCounter = 0
 
 // Default Values
-let workTimeR = "25:00"
+
+const defaultValues = ["25:00", "25:00", "5:00", "15:00"]
+
+
+let workTimeR = defaultValues[0]
 let workTime = hmsToSecondsOnly(workTimeR)
 
-let workTimeLeftR = "25:00"
+let workTimeLeftR = defaultValues[1]
 let workTimeLeft = hmsToSecondsOnly(workTimeLeftR)
 
-let shortBreakR = "5:00"
+let shortBreakR = defaultValues[2]
 let shortBreak = hmsToSecondsOnly(shortBreakR)
 
-let longBreakR = "15:00"
+let longBreakR = defaultValues[3]
 let longBreak = hmsToSecondsOnly(longBreakR)
 
 let isRunning = false
@@ -77,45 +72,31 @@ const saveSettings = () => {
 
   let workTimeR = (pomodoro.value + ":00")
   workTime = hmsToSecondsOnly(workTimeR)
-
+  
   let workTimeLeftR = (pomodoro.value + ":00")
   workTimeLeft = hmsToSecondsOnly(workTimeLeftR)
-
+  
   let shortBreakR = (short.value + ":00")
   shortBreak = hmsToSecondsOnly(shortBreakR)
-
+  
   let longBreakR = (long.value+ ":00")
   longBreak = hmsToSecondsOnly(longBreakR)
 
-  let savedSettings = document.querySelector('#saved-settings')
-  savedSettings.innerText = 
-    ("WorkTime: " + `${workTimeR}` + "  " +
-    "ShortBreak: " + `${shortBreakR}` + "  "+
-    "LongBreak: " + `${longBreakR}`)
+  if(workTimeLeftR == ":00") {
+    return
+  }
   
+  save.nextElementSibling.innerText = 
+  ("WorkTime: " + `${workTimeR}` + "  " +
+  "ShortBreak: " + `${shortBreakR}` + "  "+
+  "LongBreak: " + `${longBreakR}`)
 }
-
-const useDefaultValues = () => {
-  let workTimeR = "25:00"
-  workTime = hmsToSecondsOnly(workTimeR)
-
-  let workTimeLeftR = "25:00"
-  workTimeLeft = hmsToSecondsOnly(workTimeLeftR)
-
-  let shortBreakR = "5:00"
-  shortBreak = hmsToSecondsOnly(shortBreakR)
-
-  let longBreakR = "15:00"
-  longBreak = hmsToSecondsOnly(longBreakR)
-}
-
 
 const toggle = (reset) => {
     if(reset) {
         stopClock();
     } else {
         if(isRunning === true) {
-            
             isRunning = false
             clearInterval(clockTimer);
         } else {
@@ -165,7 +146,6 @@ const displayCurrentTimeLeftInSession = () => {
 
   const stepDown = () => {
     if (workTimeLeft > 0) {
-      
       workTimeLeft--;
       timeSpentInCurrentSession++;
       } else if (workTimeLeft === 0) {
@@ -173,34 +153,31 @@ const displayCurrentTimeLeftInSession = () => {
         if (type === 'Work' && workCounter != 3) {
           workTimeLeft = shortBreak;
           type = 'Break';
-          console.log(type);
           alarm.play()
           
         } else if (workCounter == 3) {
           workTimeLeft = longBreak;
           type = 'Long';
           workCounter = 0
-          console.log(type);
           alarm.play()
           
         } else if(type === 'Break' || (type === 'Long' && workCounter == 0)){
             workTimeLeft = workTime;
             type = 'Work';
             workCounter++
-            console.log(type);
             alarm.play()
           }
       }
       displayCurrentTimeLeftInSession();
     }
 
-    function hmsToSecondsOnly(str) {
-        let p = str.split(':');
-            s = 0, m = 1;
-            console.log(p);
+    function hmsToSecondsOnly(string) {
+        let p = string.split(':', 2);
+            seg = 0, min = 1;
+            console.log(p)
         while (p.length > 0) {
-            s += m * parseInt(p.pop(), 10);
-            m *= 60;
+            seg += min * parseInt(p.pop(), 10);
+            min *= 60;
         }
-        return s;
+        return seg;
     }
