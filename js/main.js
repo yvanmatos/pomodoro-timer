@@ -3,9 +3,13 @@ let timer = document.querySelector("#timer")
 const start = document.querySelector(".start")
 const stop = document.querySelector(".stop")
 const reset = document.querySelector(".reset")
-const save = document.querySelector("#submit")
+
+const pomodoro = document.querySelector("[name=pomodoro]")
+const short = document.querySelector("[name=short]")
+const long = document.querySelector("[name=long]")
 
 const alarm = new Audio('./imgs/alarm.mp3')
+const save = document.querySelector("#submit")
 
 // Listeners
 start.addEventListener("click", () => {
@@ -18,12 +22,34 @@ stop.addEventListener("click", () => {
 
 reset.addEventListener("click", () => {
     toggle(true)
-    error.innerText = '';
-    timer.innerText = workTimeR;
 })
 
 save.addEventListener("click", () => {
     saveSettings();
+})
+
+pomodoro.addEventListener("change", () => {
+  if(pomodoro.value.match(/[a-zA-Z]/g)) { 
+    save.disabled = true
+  } else { 
+    save.disabled = false
+  }
+})
+
+long.addEventListener("change", () => {
+  if(long.value.match(/[a-zA-Z]/g)) { 
+    save.disabled = true
+  } else { 
+    save.disabled = false
+  }
+})
+
+short.addEventListener("change", () => {
+  if(short.value.match(/[a-zA-Z]/g)) { 
+    save.disabled = true
+  } else { 
+    save.disabled = false
+  }
 })
 
 // Timer
@@ -49,16 +75,16 @@ let isRunning = false
 
 const saveSettings = () => {
 
-  let workTimeR = (document.querySelector('[name=pomodoro]').value + ":00")
+  let workTimeR = (pomodoro.value + ":00")
   workTime = hmsToSecondsOnly(workTimeR)
 
-  let workTimeLeftR = (document.querySelector('[name=pomodoro]').value + ":00")
+  let workTimeLeftR = (pomodoro.value + ":00")
   workTimeLeft = hmsToSecondsOnly(workTimeLeftR)
 
-  let shortBreakR = (document.querySelector('[name=short]').value + ":00")
+  let shortBreakR = (short.value + ":00")
   shortBreak = hmsToSecondsOnly(shortBreakR)
 
-  let longBreakR = (document.querySelector('[name=long]').value+ ":00")
+  let longBreakR = (long.value+ ":00")
   longBreak = hmsToSecondsOnly(longBreakR)
 
   let savedSettings = document.querySelector('#saved-settings')
@@ -67,6 +93,20 @@ const saveSettings = () => {
     "ShortBreak: " + `${shortBreakR}` + "  "+
     "LongBreak: " + `${longBreakR}`)
   
+}
+
+const useDefaultValues = () => {
+  let workTimeR = "25:00"
+  workTime = hmsToSecondsOnly(workTimeR)
+
+  let workTimeLeftR = "25:00"
+  workTimeLeft = hmsToSecondsOnly(workTimeLeftR)
+
+  let shortBreakR = "5:00"
+  shortBreak = hmsToSecondsOnly(shortBreakR)
+
+  let longBreakR = "15:00"
+  longBreak = hmsToSecondsOnly(longBreakR)
 }
 
 
@@ -96,8 +136,6 @@ const displayCurrentTimeLeftInSession = () => {
     if (isNaN(workTimeLeft)){
       timer.innerText = "Error"
       error.innerText = "Please use positive integers for all timers"
-      isRunning = false
-      return 0
     } else {
     const secondsLeft = workTimeLeft;
     let result = '';
@@ -109,9 +147,9 @@ const displayCurrentTimeLeftInSession = () => {
     function addLeadingZeroes(time) {
       return time < 10 ? `0${time}` : time
     }
+
     if (hours > 0) result += `${hours}:`;
     result += `${addLeadingZeroes(minutes)}:${addLeadingZeroes(seconds)}`
-
     timer.innerText = result.toString();
     }
     
